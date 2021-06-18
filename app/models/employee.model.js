@@ -8,7 +8,6 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const Joi = require('joi');
 
 const EmployeeSchema = mongoose.Schema({
     firstName: {

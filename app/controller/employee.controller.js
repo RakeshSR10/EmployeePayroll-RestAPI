@@ -6,17 +6,8 @@
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/
 
-const Joi = require('joi')
+const validateSchema = require('../middleware/employee.validation.js')
 const Service = require('../services/service.js')
-
-//Joi Validation for Employee Data
-const validateSchema = Joi.object({
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
-    emailId: Joi.string().email().required(),
-    password: Joi.string().min(8).max(30).required()
-})
-
 class employeeController {
     /**
      * @description Create and save employee and sending response to service
@@ -24,12 +15,13 @@ class employeeController {
      * @param req,res for service
      */
     
-    registerAPI = (req, res) => {
+    registerationAPI = (req, res) => {
         //Validate request 
-        if(!req.body.emailId){
-            return res.status(400).send({
-                message: "Email should be Unique"
-            });
+        const validation = validateSchema.validate(req.body)
+        if(validation.error){
+            res.status(400).send({
+                message: validation.error.details[0].message
+            })
         }
 
         //Create employee
@@ -40,24 +32,19 @@ class employeeController {
             password: req.body.password
         }
 
-        const employeeData = {}
-
-        //Validate Employee request data
-        const ValidationData = validateSchema.validate(employee)
-        if(ValidationData.error){
-            res.status(400).send('Validation error')
-        }
+        //const employeeData = {}
+        
         Service.createEmpDetails(employee, (error, data) => {
             if(error){
-                return res.status(500)
+                return res.status(400)
                 .send({
                     message: error.message || 'Error occurred while Registering Employee data'
                 })
             }
             else 
             {
-                return res.status(500).send({
-                    message: 'Success', data: employeeData.data = data
+                return res.status(200).send({
+                    message: 'Success', data: data
                 })
             }
         })

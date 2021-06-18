@@ -7,6 +7,7 @@
 -----------------------------------------------------------------------------------------------*/
 
 const Model = require('../models/employee.model.js')
+const bcrypt = require('bcrypt');
 
 class EmployeeDataService{
     /**
@@ -15,7 +16,9 @@ class EmployeeDataService{
      * @param callback callback for controller
      */
     createEmpDetails = (employee, callback) => {
-        Model.createEmpDetails(employee, callback)
+        Model.createEmpDetails(employee, (error, data) => {
+            return error ? callback(error, null) : callback(null, data)
+        })
     }
 }
 
