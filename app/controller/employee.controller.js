@@ -13,9 +13,8 @@ const Service = require('../services/service.js')
 const validateSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    emailId: Joi.string().emailId().required(),
-    password: Joi.string().min(8).max(30).required(),
-    repeatPassword: Joi.string().valid(Joi.ref('password')).required()
+    emailId: Joi.string().email().required(),
+    password: Joi.string().min(8).max(30).required()
 })
 
 class employeeController {
@@ -24,6 +23,7 @@ class employeeController {
      * @method registerAPI to save the employee
      * @param req,res for service
      */
+    
     registerAPI = (req, res) => {
         //Validate request 
         if(!req.body.emailId){
@@ -37,8 +37,7 @@ class employeeController {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             emailId: req.body.emailId,
-            password: req.body.password,
-            repeatPassword: req.body.repeatPassword
+            password: req.body.password
         }
 
         const employeeData = {}

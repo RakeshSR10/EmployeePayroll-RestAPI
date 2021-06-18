@@ -1,6 +1,6 @@
 const express = require("express");
-require('./config/database.config');
-require('dotenv')
+require('./config/database.config.js');
+require('dotenv').config();
 
 // Create express app
 const app = express();

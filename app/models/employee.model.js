@@ -28,10 +28,6 @@ const EmployeeSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    repeatPassword: {
-        type: String,
-        required: true
-    }
 },{
     timestamp: true
 })
@@ -39,7 +35,6 @@ const EmployeeSchema = mongoose.Schema({
 EmployeeSchema.pre("save", async function(next){
     if(this.isModified("password")){
         this.password = await bcrypt.hash(this.password, 10);
-        this.repeatPassword = await bcrypt.hash(this.repeatPassword, 10);
     }
     next();
 })
@@ -59,7 +54,7 @@ class EmployeeDataModel {
             firstName: employee.firstName,
             lastName: employee.lastName,
             emailId: employee.emailId,
-            password: employee.password
+            password: employee.password,
         });
         employeeSchema.save(callback)
     };
