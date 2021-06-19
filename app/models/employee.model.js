@@ -65,7 +65,7 @@ class EmployeeDataModel {
      */
 
      loginEmpDetails = (loginEmployeeData, callBack) => {
-        Register.findOne({'emailId': loginEmployeeData.emailId},(error, data) => {
+        Register.findOne({'emailId': loginEmployeeData.emailId, 'password': loginEmployeeData.password},(error, data) => {
             if(error){
                 return callBack(error, null);
             }else if(!data){
