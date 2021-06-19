@@ -31,9 +31,6 @@ class employeeController {
             emailId: req.body.emailId,
             password: req.body.password
         }
-
-        //const employeeData = {}
-        
         Service.createEmpDetails(employee, (error, data) => {
             if(error){
                 return res.status(400)
@@ -46,6 +43,26 @@ class employeeController {
                 return res.status(200).send({
                     message: 'Success', data: data
                 })
+            }
+        })
+    }
+
+    /**
+     * @description retrieving login info from user by email and password
+     * @method loginAPI
+     * @param req,res for service
+     */
+
+     loginAPI = (req, res) => {
+        const loginEmployeeData = {
+            emailId: req.body.emailId,
+            password : req.body.password
+        }
+        Service.loginEmpDetails(loginEmployeeData , (error, data) => {
+            if(error){
+                return res.status(400).send({message: error})
+            }else{
+                return res.status(200).send({message: "Login Successfully..!", data: data})
             }
         })
     }

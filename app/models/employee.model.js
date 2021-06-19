@@ -57,6 +57,23 @@ class EmployeeDataModel {
         });
         employeeSchema.save(callback)
     };
+
+    /**
+     * @description login user from the database
+     * @param loginEmployeeData
+     * @param callback for service
+     */
+
+     loginEmpDetails = (loginEmployeeData, callBack) => {
+        Register.findOne({'emailId': loginEmployeeData.emailId},(error, data) => {
+            if(error){
+                return callBack(error, null);
+            }else if(!data){
+                return callBack("Invalid email and password..!", null);
+            }
+            return callBack(null, data);
+        })
+    };
 }
 
 module.exports = new EmployeeDataModel();
