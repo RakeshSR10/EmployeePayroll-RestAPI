@@ -48,7 +48,7 @@ class employeeController {
     }
 
     /**
-     * @description retrieving login info from user by email and password
+     * @description retrieving login info from user by emailId and password
      * @method loginAPI
      * @param req,res for service
      */
