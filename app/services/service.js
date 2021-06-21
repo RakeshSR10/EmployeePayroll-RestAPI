@@ -7,9 +7,11 @@
 -----------------------------------------------------------------------------------------------*/
 
 const employeeModel = require('../models/employee.model.js')
+const helperClass = require('../middleware/employee.validation.js');
+
 const bcrypt = require('bcrypt');
-require('dotenv').config();
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const {json} = require('express');
 const e = require('express');
@@ -36,16 +38,12 @@ class EmployeeDataService{
     
      loginEmpDetails = (loginEmployeeData, callback) => {
 
-        function generateAccessToken(loginEmployeeData) {
-            return jwt.sign(loginEmployeeData, SECRET_TOKEN, { expiresIn: '1800s'});
-        }
-
-        const token = generateAccessToken({ loginEmployeeData });
+        const token = helperClass.generateAccessToken({loginEmployeeData});
 
         employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {
             if(error) {
-                callback(error.null);
-            } else if(!bcrypt.compareSync(loginEmployeeData.password, data.password)) {
+                callback(error, null);
+            } else if(helperClass.bcrypt(loginEmployeeData.password, data.password)) {
                 return callback("Please enter your correct password...!", null);
             }
             return callback(token, 'Login Successfully...')
