@@ -72,7 +72,7 @@ class employeeController {
             res.send({
                 success: true, 
                 message: "Login Successfully...",
-                data: loginEmployeeData
+                data:data
             }));
         })
     }
