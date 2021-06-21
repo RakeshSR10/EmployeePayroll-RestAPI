@@ -6,8 +6,13 @@
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/
 
+//declared a constant variable to assign a imported class from services
+const employeeService = require('../services/service.js')
+
+//declared a constant variable to assign a imported class from middleware
 const validateSchema = require('../middleware/employee.validation.js')
-const Service = require('../services/service.js')
+
+//create class to write function
 class employeeController {
     /**
      * @description Create and save employee and sending response to service
@@ -15,7 +20,7 @@ class employeeController {
      * @param req,res for service
      */
     
-    registerationAPI = (req, res) => {
+    registrationAPI = (req, res) => {
         //Validate request 
         const validation = validateSchema.validate(req.body)
         if(validation.error){
@@ -31,7 +36,7 @@ class employeeController {
             emailId: req.body.emailId,
             password: req.body.password
         }
-        Service.createEmpDetails(employee, (error, data) => {
+        employeeService.createEmpDetails(employee, (error, data) => {
             if(error){
                 return res.status(400)
                 .send({
@@ -58,14 +63,20 @@ class employeeController {
             emailId: req.body.emailId,
             password : req.body.password
         }
-        Service.loginEmpDetails(loginEmployeeData , (error, data) => {
-            if(error){
-                return res.status(400).send({message: error})
-            }else{
-                return res.status(200).send({message: "Login Successfully..!", data: data})
-            }
+        employeeService.loginEmpDetails(loginEmployeeData , (error, data) => {
+            return((error) ?
+            res.status(500).send({
+                success: false, 
+                message: error
+            }) : 
+            res.send({
+                success: true, 
+                message: "Login Successfully...",
+                data: loginEmployeeData
+            }));
         })
     }
 }
 
+//exporting the class to utilize function created in this class
 module.exports = new employeeController();

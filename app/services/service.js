@@ -6,7 +6,7 @@
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/
 
-const Model = require('../models/employee.model.js')
+const employeeModel = require('../models/employee.model.js')
 const bcrypt = require('bcrypt');
 
 class EmployeeDataService{
@@ -18,7 +18,7 @@ class EmployeeDataService{
      */
 
     createEmpDetails = (employee, callback) => {
-        Model.createEmpDetails(employee, (error, data) => {
+        employeeModel.createEmpDetails(employee, (error, data) => {
             return error ? callback(error, null) : callback(null, data)
         })
     }
@@ -30,10 +30,17 @@ class EmployeeDataService{
      */
     
      loginEmpDetails = (loginEmployeeData, callback) => {
-        Model.loginEmpDetails(loginEmployeeData, (error, data) => {
-            return error ? callback(error, null) : callback(null, data)
+        employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {
+            if(error) {
+                callback(error.null);
+            } else if(!bcrypt.compareSync(loginEmployeeData.password, data.password)) {
+                return callback("Please enter your correct password...!", null);
+            }
+            return callback(null, 'Login Successfully...')
         })
     }
 }
 
+
+//exporting the class to utilize function created in this class
 module.exports = new EmployeeDataService();

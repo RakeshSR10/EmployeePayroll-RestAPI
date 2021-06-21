@@ -6,9 +6,13 @@
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/
 
+//requiring the mongoose package to connect to mongodb DataBase
 const mongoose = require('mongoose');
+
+//Authenticate password using bcrypt
 const bcrypt = require('bcrypt');
 
+//Schema for store data into the Database
 const EmployeeSchema = mongoose.Schema({
     firstName: {
         type: String,
@@ -28,6 +32,7 @@ const EmployeeSchema = mongoose.Schema({
         required: true
     },
 },{
+    //generates the Time Stamp for data has been added
     timestamp: true
 })
 
@@ -38,8 +43,9 @@ EmployeeSchema.pre("save", async function(next){
     next();
 })
 
-const Register = mongoose.model('Register', EmployeeSchema);
+const employeeRegister = mongoose.model('Register', EmployeeSchema);
 
+//create a class to write functions
 class EmployeeDataModel {
 
     /**
@@ -49,7 +55,7 @@ class EmployeeDataModel {
      */
 
     createEmpDetails = (employee, callback) => {
-        const employeeSchema = new Register({
+        const employeeSchema = new employeeRegister({
             firstName: employee.firstName,
             lastName: employee.lastName,
             emailId: employee.emailId,
@@ -65,15 +71,16 @@ class EmployeeDataModel {
      */
 
      loginEmpDetails = (loginEmployeeData, callBack) => {
-        Register.findOne({'emailId': loginEmployeeData.emailId, 'password': loginEmployeeData.password},(error, data) => {
+        employeeRegister.findOne({'emailId': loginEmployeeData.emailId},(error, data) => {
             if(error){
                 return callBack(error, null);
             }else if(!data){
-                return callBack("Invalid email and password..!", null);
+                return callBack("Invalid login details..! Please re-enter", null);
             }
             return callBack(null, data);
         })
     };
 }
 
+//exporting the class to utilize function created in this class
 module.exports = new EmployeeDataModel();
