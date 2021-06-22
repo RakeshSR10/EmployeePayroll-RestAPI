@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 
 //Creating a class so as to available all functions return in it
 class HelperClass {
-    generateAccessToken(employeeData) {
-        return jwt.sign(employeeData, SECRET_TOKEN, {
+    generateToken = (loginEmployeeData) => {
+        return jwt.sign(loginEmployeeData,process.env.PRIVATE_TOKEN, {
             expiresIn: '1800s'
         });
     }
@@ -15,13 +15,13 @@ class HelperClass {
         return (userData && dbData) ? (!bcrypt.compareSync(userData, dbData)): false;
     }
     
-    tokenChecker(req, res, next) {
+    tokenDataChecker(req, res, next) {
     let token = req.get("token");
         if (token) {
-            jwt.verify(token, SECRET_TOKEN, error => {
+            jwt.verify(token, process.env.PRIVATE_TOKEN, error => {
                 if (error) {
                     console.log(error);
-                    return res.status(400).send({
+                    return res.send({
                         success: false,
                         message: "Token is Invalid!"
                     });
@@ -30,7 +30,7 @@ class HelperClass {
                 }
             });
         } else {
-            return res.status(401).send({
+            return res.send({
                 success: false,
                 message: "Unauthorized User, Provide token to get authorized!"
             });

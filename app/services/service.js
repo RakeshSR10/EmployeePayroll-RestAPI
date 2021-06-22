@@ -7,14 +7,11 @@
 -----------------------------------------------------------------------------------------------*/
 
 const employeeModel = require('../models/employee.model.js')
-const helperClass = require('../middleware/employee.validation.js');
+const helperClass = require('../middleware/employee.helper.js');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
-const {json} = require('express');
-const e = require('express');
 
 class EmployeeDataService{
 
@@ -27,7 +24,7 @@ class EmployeeDataService{
     createEmpDetails = (employee, callback) => {
         employeeModel.createEmpDetails(employee, (error, data) => {
             return error ? callback(error, null) : callback(null, data)
-        })
+        });
     }
 
     /**
@@ -38,15 +35,15 @@ class EmployeeDataService{
     
      loginEmpDetails = (loginEmployeeData, callback) => {
 
-        const token = helperClass.generateAccessToken({loginEmployeeData});
+        const token = helperClass.generateToken({loginEmployeeData});
 
         employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {
             if(error) {
                 callback(error, null);
-            } else if(helperClass.bcrypt(loginEmployeeData.password, data.password)) {
+            } else if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
                 return callback("Please enter your correct password...!", null);
             }
-            return callback(token, 'Login Successfully...')
+            return callback(null, token);
         });
     }
 }

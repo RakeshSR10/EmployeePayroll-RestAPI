@@ -65,7 +65,7 @@ class employeeController {
         }
         employeeService.loginEmpDetails(loginEmployeeData , (error, data) => {
             return((error) ?
-            res.status(500).send({
+            res.status(400).send({
                 success: false, 
                 message: error
             }) : 
