@@ -19,8 +19,7 @@ class employeeController {
      * @method registerAPI to save the employee
      * @param req,res for service
      */
-    
-    registrationAPI = (req, res) => {
+    Registration = (req, res) => {
         //Validate request 
         const validation = validateSchema.validate(req.body)
         if(validation.error){
@@ -40,13 +39,16 @@ class employeeController {
             if(error){
                 return res.status(400)
                 .send({
-                    message: error.message || 'Error occurred while Registering Employee data'
+                    success: false,
+                    message: "Invalid details..!"
                 })
             }
             else 
             {
                 return res.status(200).send({
-                    message: 'Success', data: data
+                    success: true,
+                    message: 'Employee registered successfully.',
+                    data: data
                 })
             }
         })
@@ -57,8 +59,7 @@ class employeeController {
      * @method loginAPI
      * @param req,res for service
      */
-
-     loginAPI = (req, res) => {
+     Login = (req, res) => {
         const loginEmployeeData = {
             emailId: req.body.emailId,
             password : req.body.password
@@ -77,6 +78,5 @@ class employeeController {
         })
     }
 }
-
 //exporting the class to utilize function created in this class
 module.exports = new employeeController();

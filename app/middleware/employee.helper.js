@@ -10,11 +10,9 @@ class HelperClass {
             expiresIn: '1800s'
         });
     }
-
     bcryptDataCheck(userData, dbData) {
         return (userData && dbData) ? (!bcrypt.compareSync(userData, dbData)): false;
     }
-    
     tokenDataChecker(req, res, next) {
     let token = req.get("token");
         if (token) {
@@ -37,6 +35,5 @@ class HelperClass {
         }
     }
 }
-
 //exporting the class to utilize or call function created in this class
  module.exports = new HelperClass();

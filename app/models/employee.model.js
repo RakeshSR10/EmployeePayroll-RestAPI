@@ -75,7 +75,7 @@ class EmployeeDataModel {
             if(error){
                 return callBack(error, null);
             }else if(!data){
-                return callBack("Invalid login details..! Please re-enter", null);
+                return callBack("Invalid credentials..! Please re-enter", null);
             }
             return callBack(null, data);
         })

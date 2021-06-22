@@ -43,7 +43,7 @@ class EmployeeDataService{
             } else if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
                 return callback("Please enter your correct password...!", null);
             }
-            return callback(null, token);
+            return callback(null, data);
         });
     }
 }

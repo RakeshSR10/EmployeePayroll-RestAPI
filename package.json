@@ -14,7 +14,7 @@
     "Mongoose",
     "Employee-Payroll"
   ],
-  "author": "Rakesh S R",
+  "author": "Rakesh SR",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -25,6 +25,8 @@
     "jsonwebtoken": "^8.5.1",
     "mocha": "^9.0.1",
     "mongoose": "^5.12.14",
+    "nodemon": "^2.0.7",
+    "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
