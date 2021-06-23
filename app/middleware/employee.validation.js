@@ -10,5 +10,4 @@ const validateSchema = Joi.object({
                 .required(),
     password: Joi.string().min(8).max(30).required()
 }) 
-
 module.exports = validateSchema;

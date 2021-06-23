@@ -5,7 +5,6 @@
  * @author       Rakesh SR <rakeshsrking@gmail.com>
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/
-
 //declared a constant variable to assign a imported class from services
 const employeeService = require('../services/service.js')
 
@@ -27,7 +26,6 @@ class employeeController {
                 message: validation.error.details[0].message
             })
         }
-
         //Create employee
         const employee = {
             firstName: req.body.firstName,
@@ -53,7 +51,6 @@ class employeeController {
             }
         })
     }
-
     /**
      * @description retrieving login info from user by emailId and password
      * @method loginAPI
