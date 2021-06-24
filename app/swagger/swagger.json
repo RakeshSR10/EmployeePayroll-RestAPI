@@ -1,0 +1,119 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Employee Payroll Back-End app",
+      "description": "Employee Payroll Application API",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Employees",
+        "description": "API for Employees in the system"
+      }
+    ],
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/employeeRegister": {
+        "post": {
+          "tags": [
+            "Register"
+          ],
+          "description": "Create new employee in system",
+          "parameters": [
+            {
+              "name": "Register",
+              "in": "body",
+              "description": "Employee that we want to create",
+              "schema": {
+                "$ref": "#/definitions/register"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "New Employee is added",
+              "schema": {
+                "$ref": "#/definitions/register"
+              }
+            }
+          }
+        }
+      },
+      "/employeeLogin": {
+        "post": {
+          "tags": [
+            "login"
+          ],
+          "description": "login Employee in system",
+          "parameters": [
+            {
+              "name": "Login",
+              "in": "body",
+              "description": "Employee that we want to login",
+              "schema": {
+                "$ref": "#/definitions/login"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "New login",
+              "schema": {
+                "$ref": "#/definitions/login"
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "register": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "emailId": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "emailId" : {
+            "type" :"string"
+          },
+        "password": {
+          "type": "string"
+          }
+        }
+      }
+    }
+  }
