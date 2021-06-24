@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 class HelperClass {
     generateToken = (loginEmployeeData) => {
         return jwt.sign(loginEmployeeData,process.env.PRIVATE_TOKEN, {
-            expiresIn: '1800s'
+            expiresIn: '4000s'
         });
     }
     bcryptDataCheck(userData, dbData) {
@@ -18,7 +18,7 @@ class HelperClass {
             jwt.verify(token, process.env.PRIVATE_TOKEN, error => {
                 if (error) {
                     console.log(error);
-                    return res.send({
+                    return res.status(400).send({
                         success: false,
                         message: "Token is Invalid!"
                     });

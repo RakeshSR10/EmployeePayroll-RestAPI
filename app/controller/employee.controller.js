@@ -61,7 +61,7 @@ class employeeController {
             emailId: req.body.emailId,
             password : req.body.password
         }
-        employeeService.loginEmpDetails(loginEmployeeData , (error, data) => {
+        employeeService.loginEmpDetails(loginEmployeeData , (error, token) => {
             return((error) ?
             res.status(400).send({
                 success: false, 
@@ -70,7 +70,7 @@ class employeeController {
             res.send({
                 success: true, 
                 message: "Login Successfully...",
-                data:data
+                token: token
             }));
         })
     }

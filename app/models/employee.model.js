@@ -1,7 +1,7 @@
 /**
  * @module       EmployeeDataModel
  * @file         employee.models.js
- * @description  EmpSchema holds the database Schema 
+ * @description  EmployeeSchema holds the database Schema 
  * @author       Rakesh SR <rakeshsrking@gmail.com>
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/

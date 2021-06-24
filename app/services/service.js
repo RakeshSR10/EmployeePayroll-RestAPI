@@ -7,8 +7,6 @@
 -----------------------------------------------------------------------------------------------*/
 const employeeModel = require('../models/employee.model.js')
 const helperClass = require('../middleware/employee.helper.js');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 class EmployeeDataService{
     /**
@@ -27,11 +25,15 @@ class EmployeeDataService{
      * @param callback callback for controller
      */
     loginEmpDetails = (loginEmployeeData, callback) => {
-        employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {
-            const token = helperClass.generateToken({loginEmployeeData});
+        employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {  
             if(error) {
                 callback(error, null);
-            } else if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
+            } if(data){
+                console.log("Login Employee Data = ",loginEmployeeData);
+                var token = helperClass.generateToken({loginEmployeeData});
+                console.log("Token value = ", token);
+            } 
+            else if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
                 return callback("Please enter your correct password...!", null);
             }
             return callback(null, token);
