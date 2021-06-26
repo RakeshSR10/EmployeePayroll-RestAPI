@@ -27,14 +27,13 @@ class EmployeeDataService{
     loginEmpDetails = (loginEmployeeData, callback) => {
         employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {  
             if(error) {
-                callback(error, null);
-            } if(data){
-                console.log("Login Employee Data = ",loginEmployeeData);
-                var token = helperClass.generateToken({loginEmployeeData});
-                console.log("Token value = ", token);
+                callback(error, null);   
             } 
-            else if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
+            if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
                 return callback("Please enter your correct password...!", null);
+            } 
+            else if(data){               
+                var token = helperClass.generateToken({loginEmployeeData});
             }
             return callback(null, token);
         });

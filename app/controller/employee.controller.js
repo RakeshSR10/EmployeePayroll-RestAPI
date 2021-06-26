@@ -12,6 +12,7 @@ const employeeService = require('../services/service.js')
 const validateSchema = require('../middleware/employee.validation.js')
 
 //create class to write function
+//controller will handling the Register and Login operations
 class employeeController {
     /**
      * @description Create and save employee and sending response to service
@@ -20,6 +21,7 @@ class employeeController {
      */
     Registration = (req, res) => {
         //Validate request 
+        //req.body can extracts the data that was sent as JSON in the request body
         const validation = validateSchema.validate(req.body)
         if(validation.error){
             res.status(400).send({

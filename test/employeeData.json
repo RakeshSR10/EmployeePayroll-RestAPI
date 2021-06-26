@@ -1,0 +1,11 @@
+{
+    "employeeLoginPos":{
+        "emailId": "rakesh@gmail.com",
+        "password": "rakesh@123"
+    },
+
+    "employeeLoginNeg": {
+        "emailId": "rakesh@gmail.com",
+        "password": "rakesh@1"
+    }
+}
