@@ -7,5 +7,40 @@
     "employeeLoginNeg": {
         "emailId": "rakesh@gmail.com",
         "password": "rakesh@1"
+    },
+
+    "employeeRegisterPos": {
+        "firstName": "Rakesh",
+        "lastName": "SR",
+        "emailId": "rakesh@gmail.com",
+        "password": "rakesh@123"
+    } ,
+
+    "employeeRegNeg": {
+        "firstName": "",
+        "lastName": "Dev",
+        "email": "dileep@gmail.com",
+        "password": "dileep@111"
+    },
+
+    "employeeRegNegLastName": {
+        "firstName": "Santhosh",
+        "lastName": "",
+        "email": "santhosh@gmail.com",
+        "password": "santhosh@101"
+    },
+
+    "employeeRegNegEmail": {
+        "firstName": "Kavya",
+        "lastName": "KK",
+        "email": "kavya.c",
+        "password": "kavya@555"
+    },
+
+    "employeeRegNegPassword": {
+        "firstName": "Raju", 
+        "lastName": "DV", 
+        "email": "raju@gmail.com", 
+        "password": ""
     }
 }

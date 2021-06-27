@@ -56,7 +56,7 @@ class employeeController {
     /**
      * @description retrieving login info from user by emailId and password
      * @method loginAPI
-     * @param req,res for service
+     * @param req,res for employeeService
      */
      Login = (req, res) => {
         const loginEmployeeData = {
@@ -76,6 +76,29 @@ class employeeController {
             }));
         })
     }
+    /**
+     * @description retrieve all employee data from database in this function
+     * @param req, res, for employeeService
+     * @method getAllEmployee
+     */
+     getAllEmployee = (req, res) => {
+         employeeService.getAllEmpDetails((error, data) => {
+             if(error) {
+                 return res.status(400)
+                        .send({
+                            success: false,
+                            message: "Error while retrieving Employee Details",
+                            data: null
+                        });
+             } else {
+                 return res.status(200).send({
+                     success: true,
+                     message: "Details of all the Employees",
+                     data: data
+                 })
+             }
+         })
+     }
 }
 //exporting the class to utilize function created in this class
 module.exports = new employeeController();

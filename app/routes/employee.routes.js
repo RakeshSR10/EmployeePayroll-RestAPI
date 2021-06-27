@@ -8,4 +8,7 @@ module.exports = (app) => {
 
     //Creating API for Employee Login 
     app.post('/employeeLogin', Controller.Login);
+
+    //API for read all employees details
+    app.get('/getAllEmployees', Controller.getAllEmployee);
 }

@@ -72,6 +72,21 @@ class EmployeeDataModel {
             return callBack(null, data);
         })
     };
+
+    /**
+     * @description find all employees from the database
+     * @method find()
+     * @param callBack for service
+     */
+    findAll = (callBack) => {
+        employeeRegister.find({}, (error, data) => {
+            if(error) {
+                return callBack(error, null);
+            } else {
+                return callBack(null, data);
+            }
+        })
+    }
 }
 //exporting the class to utilize function created in this class
 module.exports = new EmployeeDataModel();

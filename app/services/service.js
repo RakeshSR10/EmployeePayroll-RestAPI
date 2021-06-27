@@ -38,6 +38,16 @@ class EmployeeDataService{
             return callback(null, token);
         });
     }
+    /**
+     * @description send employee Information to read in the controller
+     * @method getAllEmpDetails
+     * @param callback, callback for controller 
+     */
+     getAllEmpDetails = (callback) => {
+         employeeModel.findAll((error, data) => {
+             return (error) ? callback(error, null) : callback(null, data);
+         })
+     }
 }
 //exporting the class to utilize function created in this class
 module.exports = new EmployeeDataService();
