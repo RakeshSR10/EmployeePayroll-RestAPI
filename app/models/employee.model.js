@@ -9,6 +9,7 @@
 const mongoose = require('mongoose');
 //Authenticate password using bcrypt
 const bcrypt = require('bcrypt');
+const { error } = require('../middleware/employee.validation');
 
 //Schema for store data into the Database
 const EmployeeSchema = mongoose.Schema({
@@ -33,6 +34,7 @@ const EmployeeSchema = mongoose.Schema({
     //generates the Time Stamp for data has been added
     timestamp: true
 })
+
 EmployeeSchema.pre("save", async function(next){
     if(this.isModified("password")){
         this.password = await bcrypt.hash(this.password, 10);
@@ -87,6 +89,56 @@ class EmployeeDataModel {
             }
         })
     }
+
+    /**
+     * @description gets a data using ID
+     * @param  employeeData 
+     * @param  callBack 
+     */
+    findOne = (employee, callBack) => {
+        employeeRegister.findById({'_id': employee._id}, (error, data) => {
+            if(error) {
+                return callBack(error, null);
+            } else {
+                return callBack(null, data);
+            }
+        })
+    }
+
+    /**
+     * @description find employee by Id and update in the database
+     * @param updateById
+     * @param callback for service
+     */
+     updateById = (_id, employee, callback) => {
+         employeeRegister.findByIdAndUpdate({'_id': employee._id}, {
+             firstName: employee.firstName,
+             lastName: employee.lastName,
+             emailId: employee.emailId,
+             password: employee.password,
+         }, (error, data) => {
+             if(error){
+                 return callback(error, null)
+             }else {
+                 return callback(null, data)
+             }
+         })
+     }
+
+     /**
+      * @description find employee using Id and delete details of employee from database
+      * @param deleteById
+      * @param callback for Service
+      */
+      deleteById = (employee, callback) => {
+          employeeRegister.findByIdAndRemove(employee._id, (error, data) =>{
+              if(error){
+                  return callback(error, null)
+              }else {
+                  return callback(null, data)
+              }
+          })
+      }
 }
 //exporting the class to utilize function created in this class
 module.exports = new EmployeeDataModel();

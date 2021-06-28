@@ -55,7 +55,7 @@ class employeeController {
     }
     /**
      * @description retrieving login info from user by emailId and password
-     * @method loginAPI
+     * @method Login
      * @param req,res for employeeService
      */
      Login = (req, res) => {
@@ -95,10 +95,98 @@ class employeeController {
                      success: true,
                      message: "Details of all the Employees",
                      data: data
-                 })
+                })
              }
          })
      }
+
+     /**
+      * @description get employee data by using employeeId
+      * @param req, res
+      */
+      getEmployeeById = (req, res) => {
+          let employeeId = req.params
+          employeeService.getEmpDetailsById(employeeId, (error, data) => {
+              if(error){
+                  return res.status(400)
+                    .send({
+                            success: false,
+                            message: "Error while retrieving single employee details",
+                            data: null
+                        })
+              } else {
+                  return res.status(200)
+                    .send({
+                        success: true,
+                        message: "Successfully retrieving single employee details",
+                        data: data
+                    })
+                }
+            })
+    }
+
+    /**
+     * @description Update employee Details by Id
+     * @method update
+     * @param req, res for service
+     */
+    update = (req, res) => {
+        const validation = validateSchema.validate(req.body);
+        if(validation.error) {
+            res.status(400).send({message: validation.error.details[0].message})
+        }
+        let employeeId = req.params
+        const employee = {
+            _id: req.params._id,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            emailId: req.body.emailId,
+            password: req.body.password
+        }
+        employeeService.updateEmpDetailsById(employeeId, employee, (error, data) => {
+            if(error){
+                return res.status(400).
+                    send({
+                        success: false,
+                        message: "Error occurred while updating data",
+                        data: null
+                    })
+            } else {
+                return res.status(200).
+                    send({
+                        success: true,
+                        message: "Employee details updating successfully",
+                        data: data
+                    })
+            }
+        })
+    }
+
+    /**
+     * @description deleting employee details using Id
+     * @method delete
+     * @param req, res for service
+     */
+    delete = (req, res) => {
+        let employee = req.params
+        employeeService.deleteEmpDetailsById(employee, (error, data) =>{
+            if(error){
+                return res.status(404).
+                send({
+                    success: false,
+                    message: "Given Employee not found",
+                    data: data
+                })
+            }else {
+                return res.status(200).send
+                ({
+                    success: true,
+                    message: "Successfully deleted employee details",
+                    data: data
+                })
+            }
+        })
+    }
 }
 //exporting the class to utilize function created in this class
 module.exports = new employeeController();

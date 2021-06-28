@@ -27,15 +27,14 @@ class EmployeeDataService{
     loginEmpDetails = (loginEmployeeData, callback) => {
         employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {  
             if(error) {
-                callback(error, null);   
+                return callback(error, null);   
             } 
             if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
                 return callback("Please enter your correct password...!", null);
-            } 
-            else if(data){               
+            }else {               
                 var token = helperClass.generateToken({loginEmployeeData});
+                return callback(null, token);
             }
-            return callback(null, token);
         });
     }
     /**
@@ -48,6 +47,39 @@ class EmployeeDataService{
              return (error) ? callback(error, null) : callback(null, data);
          })
      }
+
+     /**
+     * @description function handles to get single employee data
+     * @param  employeeInfo 
+     * @param  callBack 
+     */
+      getEmpDetailsById = (employee, callBack) => {
+          employeeModel.findOne(employee, (error, data) => {
+              return (error) ? callback(error, null) : callback(null, data);
+          });
+      }
+
+     /**
+      * @description send Details to update in the controller
+      * @method updateEmpDetailsById
+      * @param callback, callback for controller
+     */
+      updateEmpDetailsById = (employeeId, employee, callback) => {
+          employeeModel.updateById(employeeId, employee, (error, data) => {
+              return (error) ? callback(error, null) : callback(null, data)
+          })
+      } 
+     
+     /**
+      * @description send the details to delete in the Controller
+      * @method deleteEmpDetailsById
+      * @param callback, callback for Controller
+     */
+      deleteEmpDetailsById = (employee, callback) => {
+          employeeModel.deleteById(employee, (error, data) =>{
+              return (error) ? callback(error, null) : callback(null, data);
+          })
+      } 
 }
 //exporting the class to utilize function created in this class
 module.exports = new EmployeeDataService();
