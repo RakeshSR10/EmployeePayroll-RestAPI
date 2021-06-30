@@ -25,16 +25,14 @@ class EmployeeDataService{
      * @param callback callback for controller
      */
     loginEmpDetails = (loginEmployeeData, callback) => {
-        employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {  
-            if(error) {
-                return callback(error, null);   
-            } 
-            if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)) {
-                return callback("Please enter your correct password...!", null);
-            }else {               
-                var token = helperClass.generateToken({loginEmployeeData});
-                return callback(null, token);
+        employeeModel.loginEmpDetails(loginEmployeeData, (error, data) => {
+            if(error){
+                return callback(error, null);
+            }else if(helperClass.bcryptDataCheck(loginEmployeeData.password, data.password)){
+                let token = helperClass.generateToken({loginEmployeeData});
+                return (token) ? callback(null, token) : callback(error, null);
             }
+            return callback("Please enter your correct password...!", error)
         });
     }
     /**
@@ -53,7 +51,7 @@ class EmployeeDataService{
      * @param  employeeInfo 
      * @param  callBack 
      */
-      getEmpDetailsById = (employee, callBack) => {
+      getEmpDetailsById = (employee, callback) => {
           employeeModel.findOne(employee, (error, data) => {
               return (error) ? callback(error, null) : callback(null, data);
           });

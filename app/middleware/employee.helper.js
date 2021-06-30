@@ -23,7 +23,7 @@ class HelperClass {
      * @returns 
      */
     bcryptDataCheck(userData, dbData) {
-        return (userData && dbData) ? (!bcrypt.compareSync(userData, dbData)): false;
+        return (userData && dbData) ? (bcrypt.compareSync(userData, dbData)): false;
     }
     
     tokenDataChecker(req, res, next) {

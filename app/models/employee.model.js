@@ -41,6 +41,7 @@ EmployeeSchema.pre("save", async function(next){
     }
     next();
 })
+
 const employeeRegister = mongoose.model('Register', EmployeeSchema);
 
 //create a class to write functions
@@ -95,12 +96,13 @@ class EmployeeDataModel {
      * @param  employeeData 
      * @param  callBack 
      */
-    findOne = (employee, callBack) => {
+    findOne = (employee, callback) => {
+        console.log("Employee = ", employee);
         employeeRegister.findById({'_id': employee._id}, (error, data) => {
             if(error) {
-                return callBack(error, null);
+                return callback(error, null);
             } else {
-                return callBack(null, data);
+                return callback(null, data);
             }
         })
     }

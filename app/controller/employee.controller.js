@@ -77,7 +77,7 @@ class employeeController {
         })
     }
     /**
-     * @description retrieve all employee data from database in this function
+     * @description retrieve all employee data in this function
      * @param req, res, for employeeService
      * @method getAllEmployee
      */
