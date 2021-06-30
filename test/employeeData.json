@@ -14,5 +14,12 @@
         "lastName": "Dev",
         "emailId": "dileep@gmail.com",
         "password": "dileep@123"
-    } 
+    },
+
+    "employeeRegNeg": {
+        "firstName": "Rakesh",
+        "lastName": "SR",
+        "email": "rakesh@gmail.com",
+        "password": "rakesh@123"
+    }
 }

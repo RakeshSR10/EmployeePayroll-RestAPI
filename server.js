@@ -3,6 +3,7 @@ require('./config/database.config.js');
 require('dotenv').config();
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./app/swagger/swagger.json');
+const logger = require("./logger/logger.js");
 
 // Create express app
 const app = express();
@@ -31,7 +32,7 @@ require('./app/routes/employee.routes.js')(app);
 
 // listen for requests
 app.listen(port, () => {
-    console.log("Server is listening on port", port);
+    logger.log('info',`Server is listening on port: ${port}`);
 });
 
 module.exports = app;

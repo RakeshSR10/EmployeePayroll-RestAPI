@@ -71,4 +71,63 @@ describe('POST /employeeRegister', () => {
             });
     }); 
      
+    it('It should not be able make POST request for registration details', (done) => {
+        let employeeData = userInputData.employeeRegNeg
+        chai.request(server)
+            .post('/employeeRegister')
+            .send(employeeData)
+            .end((error, res) => {
+                res.should.have.status(400);
+                res.body.should.be.a('object');
+                res.body.should.have.property("success").eql(false);
+                res.body.should.have.property("message").eql("Email exists");
+                res.body.should.have.property("data").eql(null);
+                done();
+            });
+    });
+
+});
+
+/**
+ * GET API test for retrieve all the employees
+ */
+describe('Employees Payroll API', () => {
+    let token = '';
+    beforeEach(done => {
+        chai.request(server)
+            .post('employeeLogin')
+            .send(userInputData.employeeLoginPos)
+            .end((error, res) =>{
+                token = res.body.token;
+                res.should.have.status(200)
+                if(error) {
+                    return done(error);
+                }
+                done();
+            });
+    });
+
+    /**
+     * GET request test
+     * Positive and Negative test for retrieving employee data from database
+     */
+    describe('GET /employees', () =>{
+        it('It should retrieve all Employee details from database', (done) => {
+            chai.request(server)
+                .get('employees')
+                .set('token', token)
+                .end((error, res) =>{
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property("success").eql(true);
+                    res.body.should.have.property("message").eql("Details of all the Employees");
+                    res.body.should.have.property("data").should.be.a('object');
+                    if(error) {
+                        return done(error);
+                    }
+                    done();
+                });
+        });        
+    });   
+    
 })
