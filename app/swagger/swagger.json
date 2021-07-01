@@ -46,12 +46,15 @@
           "produces": [
             "application/json"
           ],
+          "schema": {
+            "$ref": "#/definitions/register"
+          },
           "responses": {
             "200": {
-              "description": "New Employee is added",
-              "schema": {
-                "$ref": "#/definitions/register"
-              }
+              "description": "New Employee is added"
+            },
+            "400":{
+              "description":"Bad request"
             }
           }
         }
@@ -75,14 +78,158 @@
           "produces": [
             "application/json"
           ],
+          "schema": {
+            "$ref": "#/definitions/login"
+          },
           "responses": {
             "200": {
-              "description": "New login",
+              "description": "New login"   
+            },
+            "400":{
+              "description":"Bad request"
+            }
+          },
+          "security":[
+            {
+              "JWT":[]
+            }
+          ]
+        }
+      },"/employees": {
+        "get": {
+          "tags": ["read"],
+          "description": "retrieve employees data from system",
+          "parameters": [],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"    
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+    
+            "404": {
+              "description": "Not found"
+            },
+            "401": {
+              "description": "Authorization error"
+            }
+          },
+          "security": [{
+              "JWT": []
+          }]
+        }
+      },
+  
+      "/employees/:{_id}": {
+        "get": {
+          "tags": [
+            "readById"
+          ],
+          "description": "retrieve employee details by id from system",
+          "parameters": [
+            {
+              "name": ":_id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"    
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not found"
+            }
+          },
+          "security":[{
+            "JWT" :[]
+          }]
+        }
+      },
+      "/update/:{_id}": {
+        "put": {
+          "tags": [
+            "updateById"
+          ],
+          "description": "update existing employee details by id from system",
+          "parameters": [
+            {
+              "name": ":_id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "Updated Employee Details",
+              "in": "body",
+              "required": true,
               "schema": {
-                "$ref": "#/definitions/login"
+                "$ref": "#/definitions/register"
               }
             }
-          }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"    
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not found"
+            }
+          },
+          "security":[{
+            "JWT" :[]
+          }]
+        }
+      },
+      "/delete/:{_id}": {
+        "delete": {
+          "tags": [
+            "deleteById"
+          ],
+          "description": "delete employee details by id from system",
+          "parameters": [
+            {
+              "name": ":_id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"    
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+    
+            "404": {
+              "description": "Not found"
+            }
+          },
+          "security":[{
+            "JWT" :[]
+          }]
         }
       }
     },
@@ -114,6 +261,13 @@
           "type": "string"
           }
         }
+      }
+    },
+    "securityDefinitions":{
+      "JWT":{
+        "type":"apiKey",
+        "name":"token",
+        "in":"header"
       }
     }
   }
