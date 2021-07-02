@@ -24,8 +24,8 @@ class employeeController {
         //req.body can extracts the data that was sent as JSON in the request body
         const validation = validateSchema.validate(req.body)
         if(validation.error){
-            res.status(400).send({
-                message: validation.error.details[0].message
+            return res.status(400).send({
+                message: validation.error.details[0].message,
             })
         }
         //Create employee
@@ -40,7 +40,8 @@ class employeeController {
                 return res.status(400)
                 .send({
                     success: false,
-                    message: "Invalid details..!"
+                    message: "Email already in use",
+                    data: null
                 })
             }
             else 
@@ -133,7 +134,7 @@ class employeeController {
     update = (req, res) => {
         const validation = validateSchema.validate(req.body);
         if(validation.error) {
-            res.status(400).send({message: validation.error.details[0].message})
+            return res.status(400).send({message: validation.error.details[0].message})
         }
         let employeeId = req.params
         const employee = {

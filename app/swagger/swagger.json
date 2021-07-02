@@ -97,7 +97,7 @@
         }
       },"/employees": {
         "get": {
-          "tags": ["read"],
+          "tags": ["employees"],
           "description": "retrieve employees data from system",
           "parameters": [],
           "produces": [

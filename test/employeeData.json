@@ -17,9 +17,54 @@
     },
 
     "employeeRegNeg": {
+        "firstName": "Dileep",
+        "lastName": "Dev",
+        "emailId": "dileep@gmail.com",
+        "password": "dileep@123"
+    },
+    "registerWithoutFirstName" : {
+        "firstName": "",
+        "lastName": "SR",
+        "emailId": "rakesh@gmail.com",
+        "password": "rakesh@123"
+    },
+
+    "registerWithoutLastName" : {
+        "firstName": "Rakesh",
+        "lastName": "",
+        "emailId": "rakesh@gmail.com",
+        "password": "rakesh@123"
+    },
+    "registerWithoutEmail" : {
         "firstName": "Rakesh",
         "lastName": "SR",
-        "email": "rakesh@gmail.com",
+        "emailId": "",
         "password": "rakesh@123"
+    },
+
+    "registerWithoutPassword" : {
+        "firstName": "Rakesh",
+        "lastName": "SR",
+        "emailId": "rakesh@gmail.com",
+        "password": ""
+    },
+
+    "employeeGetSingleData":{
+        "success": true,
+        "message": "Successfully retrieving single employee details",
+        "data": {
+            "_id": "60d87c7512a0432878b18e42",
+            "firstName": "Rakesh",
+            "lastName": "SR",
+            "emailId": "rakesh@gmail.com",
+            "password": "$2b$10$sFGIT9gau2Qi.xKnzjUnn.jeyWMYJ23zcPHCMbvgF9PQQ7NlA1xDe",
+            "__v": 0
+        }
+    },
+    "employeeUpdate":{
+        "firstName":"Rakesh",
+        "lastName":"SRK",
+        "emailId":"rakesh@gmail.com",
+        "password":"rakesh@123"
     }
 }
