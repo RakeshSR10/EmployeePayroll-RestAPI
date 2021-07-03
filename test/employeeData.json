@@ -63,8 +63,21 @@
     },
     "employeeUpdate":{
         "firstName":"Rakesh",
-        "lastName":"SRK",
+        "lastName":"King",
         "emailId":"rakesh@gmail.com",
         "password":"rakesh@123"
+    },
+
+    "employeeUpdateNeg":{
+        "firstName":"",
+        "lastName":"Med",
+        "emailId":"swamy@gmail.com",
+        "password":"swamy@555"
+    },
+
+    "employeeDeleteNeg":{
+        "success": false,
+        "message": "Given Employee not found",
+        "data": null
     }
 }

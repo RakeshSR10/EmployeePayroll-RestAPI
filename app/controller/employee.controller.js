@@ -136,7 +136,6 @@ class employeeController {
         if(validation.error) {
             return res.status(400).send({message: validation.error.details[0].message})
         }
-        let employeeId = req.params
         const employee = {
             _id: req.params._id,
             firstName: req.body.firstName,
@@ -144,6 +143,7 @@ class employeeController {
             emailId: req.body.emailId,
             password: req.body.password
         }
+        let employeeId = req.params
         employeeService.updateEmpDetailsById(employeeId, employee, (error, data) => {
             if(error){
                 return res.status(400).
@@ -160,7 +160,7 @@ class employeeController {
                         data: data
                     })
             }
-        })
+        });
     }
 
     /**

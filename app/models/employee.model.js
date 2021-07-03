@@ -97,7 +97,6 @@ class EmployeeDataModel {
      * @param  callBack 
      */
     findOne = (employee, callback) => {
-        console.log("Employee = ", employee);
         employeeRegister.findById({'_id': employee._id}, (error, data) => {
             if(error) {
                 return callback(error, null);
@@ -114,17 +113,24 @@ class EmployeeDataModel {
      */
      updateById = (_id, employee, callback) => {
          employeeRegister.findByIdAndUpdate({'_id': employee._id}, {
-             firstName: employee.firstName,
-             lastName: employee.lastName,
-             emailId: employee.emailId,
-             password: employee.password,
-         }, (error, data) => {
-             if(error){
-                 return callback(error, null)
-             }else {
-                 return callback(null, data)
-             }
-         })
+            firstName: employee.firstName,
+            lastName: employee.lastName,
+            emailId: employee.emailId,
+            password: employee.password
+        }, {new : true}, (error, data) => {
+            return((error) ? (callback(error, null)) : (callback(null, data)));
+
+        //      firstName: employee.firstName,
+        //      lastName: employee.lastName,
+        //      emailId: employee.emailId,
+        //      password: employee.password,
+        //  }, (error, data) => {
+        //      if(error){
+        //          return callback(error, null)
+        //      }else {
+        //          return callback(null, data)
+        //      }
+         });
      }
 
      /**

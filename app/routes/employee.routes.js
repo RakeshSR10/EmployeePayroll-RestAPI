@@ -18,8 +18,8 @@ module.exports = (app) => {
     app.get('/employees/:_id', tokenCheck.tokenDataChecker, Controller.getEmployeeById);
 
     //API for update employee using Id
-    app.get('/update/:_id', tokenCheck.tokenDataChecker, Controller.update);
+    app.put('/update/:_id', tokenCheck.tokenDataChecker, Controller.update);
 
     //API for delete employee details from database using Id
-    app.get('/delete/:_id', tokenCheck.tokenDataChecker, Controller.delete);
+    app.delete('/delete/:_id', tokenCheck.tokenDataChecker, Controller.delete);
 }

@@ -222,7 +222,7 @@ describe('POST /employeeRegister', () => {
     describe('GET /employees/:_id', () =>{
         it("It should not retrieve single employee details using valid token and invalid id", (done) =>{
            chai.request(server)
-                .get('/employees/60d87c7512a0432878b18e4')
+                .get('/employees/60d87c7512a0432878b18')
                 .set('token', token)
                 .end((error, res) =>{
                     res.should.have.status(400);
@@ -257,8 +257,24 @@ describe('POST /employeeRegister', () => {
                         return done(error);
                     }
                     done();
-                })
-        })
+                });
+        });
+
+        it("It should not able update without firstName empty", (done) => {
+            chai.request(server)
+                .put('/update/60d87c7512a0432878b18e42')
+                .send(userInputData.employeeUpdateNeg)
+                .set('token', token)
+                .end((error, res) => {
+                    res.should.have.status(400);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property("message").eql("\"firstName\" is not allowed to be empty");
+                    if(error) {
+                        return done(error);
+                    }
+                    done();
+                });
+        });
     })
 
     /**
@@ -279,7 +295,23 @@ describe('POST /employeeRegister', () => {
                         return done(error);
                     }
                     done();
-                })
-        })
+                });
+        });
+
+        it("It should not able to delete with invalid id", (done) => {
+            chai.request(server)
+                .delete('/delete/60e0114336026b35082294')
+                .set('token', token)
+                .end((error, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property("success").eql(false);
+                    res.body.should.have.property("message").eql("Given Employee not found");
+                    if(error) {
+                        return done(error);
+                    }
+                    done();
+                });
+        });
     })
 });   
