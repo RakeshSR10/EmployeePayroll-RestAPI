@@ -1,38 +1,58 @@
-const express = require("express");
-require('./config/database.config.js');
-require('dotenv').config();
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./app/swagger/swagger.json');
-const logger = require("./logger/logger.js");
+'use strict';
 
-// Create express app
+// Importing express module
+const express = require('express');
+var cors = require('cors');
+
+// Importing .env modules and configuring to use attributes in the .env file
+require('dotenv').config();
+
+//Importing module to connect to the database
+// const connectingToRegisterDatabase = require('./config/user.js');
+const connectingToDatabase = require('./config/employeePayroll.js');
+
+//Importing logger
+const logger = require('./config/logger');
+
+//Importing swagger-UI
+const swaggerUI = require('swagger-ui-express');
+
+//Importing swagger json file for using swagger docs
+const swaggerDocs = require('./swagger/swagger.json');
+
+/**
+ * Creating express app
+ * -> creating an object for the express module/library
+ */
 const app = express();
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({extended: true}));
+// parse request of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
-// parse requests of content-type - application/json
+// parse request of content-type - application/json
 app.use(express.json());
 
-const port = process.env.PORT
-var options = {
-    explorer: true
-};
+app.use(cors());
 
-//swagger-ui
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+//using swagger UI
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
-// define a simple route    
-app.get('/',(req,res) => {
-    res.json({"message": "Welcome to Employee Payroll Application...!"})
-})
+//connecting to database
+// connectingToRegisterDatabase.connectToDatabase();
+connectingToDatabase.connectToDatabase();
 
-// Require Employee routes
+// Defining a simple route to display a welcome message when at the home page.
+app.get('/', (req, res) => {
+  res.send('Welcome to employee payroll app ');
+});
+
+// routes required for the CRUD operations
 require('./app/routes/employee.routes.js')(app);
 
-// listen for requests
-app.listen(port, () => {
-    logger.log('info',`Server is listening on port: ${port}`);
+// running a server at port 8000
+app.listen(process.env.PORT, () => {
+  logger.info('Server running at port number 8000');
+  console.log('Server running at port number 8000');
 });
 
 module.exports = app;

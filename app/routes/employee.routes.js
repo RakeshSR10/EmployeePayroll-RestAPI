@@ -1,25 +1,33 @@
+'use strict';
+
 //importing controller to access functionality 
-const Controller = require('../controller/employee.controller.js')
-const tokenCheck = require('../middleware/employee.helper.js');
+const Controller = require('../controllers/employee.controller.js')
+const userController = require('../controllers/user.js');
+
+//import helper to verify token
+const tokenCheck = require('../middleware/helper.js');
 
 //routes are used for handling http patterns
 module.exports = (app) => {
 
-    //Creating API for Employee Registration
-    app.post('/employeeRegister', Controller.Registration);
+    //To register a new user
+  app.post('/register', userController.Registration);
+  
+  //To login
+  app.post('/login', userController.Login);
+  
+  // To create a new employee
+  app.post('/addEmployee', tokenCheck.checkJWToken, Controller.addEmployee);
 
-    //Creating API for Employee Login 
-    app.post('/employeeLogin', Controller.Login);
+  // Getting all the data from the server
+  app.get('/getEmployees', tokenCheck.checkJWToken, Controller.getAllEmployees);
 
-    //API for retrieve all employees details
-    app.get('/employees', tokenCheck.tokenDataChecker, Controller.getAllEmployee);
+  // Getting employee by id
+  app.get( '/getEmployee/:empId', tokenCheck.checkJWToken, Controller.getOneEmployee );
 
-    //API for retrieve one employee using ID
-    app.get('/employees/:_id', tokenCheck.tokenDataChecker, Controller.getEmployeeById);
+  // Updating the employee
+  app.put( '/updateEmployee/:empId', tokenCheck.checkJWToken, Controller.updateEmployee );
 
-    //API for update employee using Id
-    app.put('/update/:_id', tokenCheck.tokenDataChecker, Controller.update);
-
-    //API for delete employee details from database using Id
-    app.delete('/delete/:_id', tokenCheck.tokenDataChecker, Controller.delete);
+  // deleting the employee
+  app.delete( '/deleteEmployee/:empId', tokenCheck.checkJWToken, Controller.removeEmployee );
 }

@@ -5,148 +5,177 @@
  * @author       Rakesh SR <rakeshsrking@gmail.com>
  * @since        18/06/2021  
 -----------------------------------------------------------------------------------------------*/
-//requiring the mongoose package to connect to mongodb DataBase
-const mongoose = require('mongoose');
-//Authenticate password using bcrypt
-const bcrypt = require('bcrypt');
-const { error } = require('../middleware/employee.validation');
+'use strict';
 
-//Schema for store data into the Database
-const EmployeeSchema = mongoose.Schema({
-    firstName: {
-        type: String,
-        required: true
+// Importing mongoose module
+const mongoose = require('mongoose');
+
+//Importing bcrypt
+const bcrypt = require('bcrypt');
+
+//assigning salt rounds
+const SALT_ROUNDS = 10;
+
+// Schema for the employee-details
+const employeeDataSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      require: true,
+      validate: /^[A-Z]{1}[\\sA-Za-z]{2,30}/,
     },
-    lastName: {
-        type: String,
-        required: true
-    },
-    emailId: {
-        type: String,
-        required: true,
-        unique: true
+    email: {
+      type: String,
+      require: true,
+      validate:
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+      unique: true, //<check
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      require: true,
+      validate: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
     },
-},{
-    //generates the Time Stamp for data has been added
-    timestamp: true
-})
+    phoneNumber: String,
+    department: String,
+    salary: String,
+    company: String,
+  },
+  {
+    timestamps: true, //to add time stamps
+    versionKey: false, //to avoid showing version
+  }
+);
 
-EmployeeSchema.pre("save", async function(next){
-    if(this.isModified("password")){
-        this.password = await bcrypt.hash(this.password, 10);
+/**
+ * function to make hashed password.
+ */
+employeeDataSchema.pre('save', function (next) {
+  // const employee = this;
+  const employee = this;
+
+  //generating salt and adding to hashed password, then replacing password with hash
+  bcrypt.hash(employee.password, SALT_ROUNDS, (err, hashedPassword) => {
+    if (err) {
+      return next(err);
     }
+    employee.password = hashedPassword;
+
+    //re-routing to the next middleware
     next();
-})
+  });
+});
 
-const employeeRegister = mongoose.model('Register', EmployeeSchema);
+//comparing passwords for the authentication
+employeeDataSchema.methods.comparePasswords = (clientsPassword, callback) => {
+  bcrypt.compare(clientsPassword, this.password, (err, matched) => {
+    return err ? callback(err, null) : callback(null, matched);
+  });
+};
 
-//create a class to write functions
-class EmployeeDataModel {
-    /**
-     * @description register user in the database
-     * @param employee 
-     * @param callback 
-     */
-    createEmpDetails = (employee, callback) => {
-        const employeeSchema = new employeeRegister({
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            emailId: employee.emailId,
-            password: employee.password,
-        });
-        employeeSchema.save(callback)
-    };
-    /**
-     * @description login user from the database
-     * @param loginEmployeeData
-     * @param callback for service
-     */
-    loginEmpDetails = (loginEmployeeData, callBack) => {
-        employeeRegister.findOne({'emailId': loginEmployeeData.emailId},(error, data) => {
-            if(error){
-                return callBack(error, null);
-            }else if(!data){
-                return callBack("Invalid credentials..! Please re-enter", null);
-            }
-            return callBack(null, data);
-        })
-    };
+//assigning schema to a constant
+const employeeDataModel = mongoose.model(
+  'employeeDataModel',
+  employeeDataSchema
+);
 
-    /**
-     * @description find all employees from the database
-     * @method find()
-     * @param callBack for service
-     */
-    findAll = (callBack) => {
-        employeeRegister.find({}, (error, data) => {
-            if(error) {
-                return callBack(error, null);
-            } else {
-                return callBack(null, data);
-            }
-        })
+// Exporting schema as a module, so that we can directly access the data inside structure.
+module.exports = mongoose.model('employeeSchema', employeeDataSchema);
+
+class CRUDOperations {
+  //create method
+  createEmployee = (newEmployee, callback) => {
+    try {
+      const employee = new employeeDataModel({
+        name: newEmployee.name,
+        email: newEmployee.email,
+        password: newEmployee.password,
+        phoneNumber: newEmployee.phoneNumber,
+        department: newEmployee.department || 'Management',
+        salary: newEmployee.salary || 'Rs.30,000.00/-',
+        company: newEmployee.company || 'ProMax',
+      });
+
+      //to save the new data
+      employee.save({}, (err, data) => {
+        return err ? callback(err, null) : callback(null, data);
+      });
+    } catch (err) {
+      callback(err, null);
     }
+  };
 
-    /**
-     * @description gets a data using ID
-     * @param  employeeData 
-     * @param  callBack 
-     */
-    findOne = (employee, callback) => {
-        employeeRegister.findById({'_id': employee._id}, (error, data) => {
-            if(error) {
-                return callback(error, null);
-            } else {
-                return callback(null, data);
-            }
-        })
+  //Get all the data from the server
+  findAll = (callback) => {
+    try {
+      employeeDataModel.find({}, (err, data) => {
+        return err ? callback(err, null) : callback(null, data);
+      });
+    } catch (err) {
+      callback(err, null);
     }
+  };
 
-    /**
-     * @description find employee by Id and update in the database
-     * @param updateById
-     * @param callback for service
-     */
-     updateById = (_id, employee, callback) => {
-         employeeRegister.findByIdAndUpdate({'_id': employee._id}, {
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            emailId: employee.emailId,
-            password: employee.password
-        }, {new : true}, (error, data) => {
-            return((error) ? (callback(error, null)) : (callback(null, data)));
+  //get one employee by id
+  getDataById = (empId, callback) => {
+    try {
+      employeeDataModel.findById(empId, (err, data) => {
+        return err ? callback(err, null) : callback(null, data);
+      });
+    } catch (err) {
+      callback(err, null);
+    }
+  };
 
-        //      firstName: employee.firstName,
-        //      lastName: employee.lastName,
-        //      emailId: employee.emailId,
-        //      password: employee.password,
-        //  }, (error, data) => {
-        //      if(error){
-        //          return callback(error, null)
-        //      }else {
-        //          return callback(null, data)
-        //      }
-         });
-     }
+  //update with id
+  updateEmpById = (empId, empData, callback) => {
+    console.log(`Employee id: ${empId.empId}`);
 
-     /**
-      * @description find employee using Id and delete details of employee from database
-      * @param deleteById
-      * @param callback for Service
-      */
-      deleteById = (employee, callback) => {
-          employeeRegister.findByIdAndRemove(employee._id, (error, data) =>{
-              if(error){
-                  return callback(error, null)
-              }else {
-                  return callback(null, data)
-              }
-          })
+    try {
+      employeeDataModel.findByIdAndUpdate(
+        empId.empId,
+        {
+          name: empData.name,
+          email: empData.email,
+          password: empData.password,
+          phoneNumber: empData.phoneNumber,
+          department: empData.department,
+          salary: empData.salary,
+          company: empData.company,
+        },
+        { new: true },
+        (err, data) => {
+          return err ? callback(err, null) : callback(null, data);
+        }
+      );
+    } catch (err) {
+      callback(err, null);
+    }
+  };
+
+  //Removing employee with id
+  removeEmpById = (empId, callback) => {
+    try {
+      employeeDataModel.findByIdAndRemove(empId.empId, (err, data) => {
+        return err ? callback(err, null) : callback(null, data);
+      });
+    } catch (err) {
+      callback(err, null);
+    }
+  };
+
+  //To login
+  loginEmp(clientCredentials, callback) {
+    employeeDataModel.findOne(
+      { email: clientCredentials.email },
+      (err, data) => {
+        if (err) return callback(err, null);
+        else if (!data) return callback('User not found with email', null);
+        return callback(null, data);
       }
+    );
+  }
 }
-//exporting the class to utilize function created in this class
-module.exports = new EmployeeDataModel();
+
+//exporting class
+module.exports = new CRUDOperations();

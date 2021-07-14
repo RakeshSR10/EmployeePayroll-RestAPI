@@ -1,317 +1,584 @@
-//assertion library
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-//test http request
-require('superagent')
-let server = require('../server');
-let userInputData = require('./employeeData.json');
+//Importing needed modules and dependencies
+const chai = require('chai');
+const chaiHTTP = require('chai-http');
+const server = require('../server');
+const userInput = require('./employeeData.json');
+const mocha = require('mocha');
+const should = chai.should();
 
-//assertion style
-chai.should()
-chai.use(chaiHttp);
+//using chaiHTTP
+chai.use(chaiHTTP);
+
 /**
- * POST request test
- * POST Employee Login with Positive and Negative Test
+ * @description Test case for registering new user.
+ *              Contains both positive and negative cases.
  */
-describe('POST /employeeLogin', () => {
-    it('It should POST Employee Login Details ', (done) => {
-        const employeeData = userInputData.employeeLoginPos
-        chai.request(server)
-            .post('/employeeLogin')
-            .send(employeeData)
-            .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property("success").eql(true);
-                res.body.should.have.property("message").eql("Login Successfully...");
-                res.body.should.have.property("token");
-                if(err) {
-                    return done(err);
-                }
-                done();
-            });
-    });
+describe('POST - User Registration', () => {
+  it('givenValidData_shouldRegisterTheUser', (done) => {
+    const userDetails = userInput.registerUserPass;
+    chai
+      .request(server)
+      .post('/registerUser')
+      .send(userDetails)
+      .end((err, res) => {
+        res.should.have.status(201);
+        res.body.should.be.a('object');
+        res.body.should.have.property('success').eql(true);
+        res.body.should.have
+          .property('message')
+          .eql('User registered successfully');
+        res.body.should.have.property('data').which.is.an('object');
+        err ? done(err) : done();
+      });
+  });
 
-    it('It should POST Invalid password and fails to generate token', (done) => {
-        const employeeData = userInputData.employeeLoginNeg
-        chai.request(server)
-            .post('/employeeLogin')
-            .send(employeeData)
-            .end((err, res) => {
-                res.should.have.status(400);
-                res.body.should.have.property("message").eql("Please enter your correct password...!");
-                if(err) {
-                    return done(err);
-                }
-                done();
-            });
-    });
+  it('givenInValidData_when_shouldReturnError', (done) => {
+    const userDetails = userInput.registerUserFirstNameFail;
+    chai
+      .request(server)
+      .post('/registerUser')
+      .send(userDetails)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.should.be.a('object');
+        res.body.should.have.property('success').eql(false);
+        res.body.should.have
+          .property('message')
+          .eql(
+            `"firstName" with value "${userDetails.firstName}" fails to match the required pattern: /^[A-Z]{1}[A-Za-z]{2,30}/` ||
+              'Some error occurred while adding user'
+          );
+        res.body.should.have.property('data').should.be.a('object');
+        err ? done(err) : done();
+      });
+  });
 });
 
-/**
- * POST request test
- * Positive and Negative - Registration Test 
- */
-describe('POST /employeeRegister', () => {
-    it('It should POST New Employee registered successfully', (done) => {
-        let employeeRegData = userInputData.employeeRegister
-        chai.request(server)
-            .post('/employeeRegister')
-            .send(employeeRegData)
-            .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property("success").eql(true);
-                res.body.should.have.property("message").eql("Employee registered successfully.");
-                res.body.should.have.property("data").should.be.a('object');
-                if(err) {
-                    return done(err);
-                }
-                done();
-            });
-    }); 
-     
-    it('It should not be able make POST request for registration details', (done) => {
-        let employeeRegData = userInputData.employeeRegNeg
-        chai.request(server)
-            .post('/employeeRegister')
-            .send(employeeRegData)
-            .end((error, res) => {
-                res.should.have.status(400);
-                res.body.should.be.a('object');
-                res.body.should.have.property("success").eql(false);
-                res.body.should.have.property("message").eql("Email already in use");
-                res.body.should.have.property("data").eql(null);
-                if(error) {
-                    return done(error);
-                }
-                done();
-            });
-    });
+describe('POST - User Login', () => {
+  it('givenDetails_whenEmailAndPasswordAreValid_shouldLoginTheUserAndReturnToken', (done) => {
+    const userCredentials = userInput.userLoginPass;
+    chai
+      .request(server)
+      .post('/userLogin')
+      .send(userCredentials)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('success').eql(true);
+        res.body.should.have.property('message').eql('Login successful👍');
+        res.body.should.have.property('data');
+        err ? done(err) : done();
+      });
+  });
 
-    it("It should not able to post request for registration details without firstName", (done) => {
-        const employeeRegDataNoFirstName = userInputData.registerWithoutFirstName
-        chai.request(server)
-            .post("/employeeRegister")
-            .send(employeeRegDataNoFirstName)
-            .end((error, res) => {
-                res.should.have.status(400)
-                res.body.should.be.a('object')
-                res.body.should.have.property("message").eql('\"firstName\" is not allowed to be empty')
-                if(error){
-                    return done(error);
-                }
-                done();
-        })
-    })
+  it('givenDetails_whenInvalidEmailAndValidPassword_shouldReturnError', (done) => {
+    const userCredentials = userInput.loginWrongEmail;
+    chai
+      .request(server)
+      .post('/userLogin')
+      .send(userCredentials)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.should.be.a('object');
+        res.body.should.have.property('success').eql(false);
+        res.body.should.have
+          .property('message')
+          .eql('User not found with email');
+        err ? done(err) : done();
+      });
+  });
 
-    it("It should not able to post request for registration details without lastName", (done) => {
-        const employeeRegDataNoLastName = userInputData.registerWithoutLastName
-        chai.request(server)
-            .post("/employeeRegister")
-            .send(employeeRegDataNoLastName)
-            .end((error, res) => {
-                res.should.have.status(400)
-                res.body.should.be.a('object')
-                res.body.should.have.property("message").eql('\"lastName\" is not allowed to be empty')
-                if(error){
-                    return done(error);
-                }
-            done();
-        })
-    })
-
-    it("It should not able to post request for registration details without emailId", (done) => {
-        const employeeRegDataNoEmail = userInputData.registerWithoutEmail
-        chai.request(server)
-            .post("/employeeRegister")
-            .send(employeeRegDataNoEmail)
-            .end((error, res) => {
-                res.should.have.status(400)
-                res.body.should.be.a('object')
-                res.body.should.have.property("message").eql('\"emailId\" is not allowed to be empty')
-                if(error){
-                    return done(error);
-                }
-            done();
-        })
-    })
-
-    it("It should not able to post request for registration details without password", (done) => {
-        const employeeRegDataNoPassword = userInputData.registerWithoutPassword
-        chai.request(server)
-            .post("/employeeRegister")
-            .send(employeeRegDataNoPassword)
-            .end((error, res) => {
-                res.should.have.status(400)
-                res.body.should.be.a('object')
-                res.body.should.have.property("message").eql('\"password\" is not allowed to be empty')
-                if(error){
-                    return done(error);
-                }
-            done();
-        })
-    })
-
+  it('givenDetails_whenValidEmailAndInValidPassword_shouldReturnError', (done) => {
+    const userCredentials = userInput.userLoginWrongPasswordFail;
+    chai
+      .request(server)
+      .post('/userLogin')
+      .send(userCredentials)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.should.be.a('object');
+        res.body.should.have.property('success').eql(false);
+        res.body.should.have.property('message').eql('Wrong password!❌');
+        err ? done(err) : done();
+      });
+  });
 });
 
-/**
- * GET API test for retrieve all employees
- */
- describe('Employee Payroll API', () => {
+//method to execute before every test case further
+describe('Employee Payroll API', () => {
+  let token = '';
 
-    let token = '';
+  beforeEach((done) => {
+    const userData = userInput.userLoginPass;
+    chai
+      .request(server)
+      .post('/userLogin')
+      .send(userData)
+      .end((err, res) => {
+        token = res.body.data;
+        console.log(`token: ${token}`);
+        res.should.have.status(200);
+        if (err) return done(err);
+        done();
+      });
+  });
 
-    beforeEach(done => {
-        chai.request(server)
-            .post('/employeeLogin')
-            .send(userInputData.employeeLoginPos)
-            .end((error, res) => {
-                token = res.body.token;
-                res.should.have.status(200);
-                if(error) {
-                    return done(error);
-                }
-                done();
-            });
-    });
-
-    /**
-    * /GET request test- Get all employee data from database Test 
-    */
-    describe('GET /employees', () => {
-        it("It should get all the employees details from database", (done) => {
-            chai.request(server)
-                .get('/employees')
-                .set('token', token)
-                .end((error, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("success").eql(true);
-                    res.body.should.have.property("message").eql("Details of all the Employees");
-                    res.body.should.have.property("data").should.be.a('object');
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
-        });
-    });
-    /**
-    * /GET request test - Get single employee details from database Test 
-    */
-    describe('GET /employees/:_id', () =>{
-        it("It should retrieve single employee details using valid token and id", (done) =>{
-           chai.request(server)
-                .get('/employees/60d87c7512a0432878b18e42')
-                .set('token', token)
-                .end((error, res) =>{
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("success").eql(true);
-                    res.body.should.have.property("message").eql("Successfully retrieving single employee details");
-                    res.body.should.have.property("data").should.be.a('object');
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
+  /**
+   * @description: Test cases for creating new employee object with POST.
+   *               Contains positive and negative cases.
+   */
+  describe('POST - Add New Employee', () => {
+    it('givenUserDetails_whenValid_shouldAddNewEmployeeToTheDatabase', (done) => {
+      const employeeDetails = userInput.addEmployeePass;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(true);
+          res.body.should.have
+            .property('message')
+            .eql('Employee added successfully');
+          res.body.should.have.property('data').should.be.a('object');
+          if (err) {
+            console.log(`error: ${err}`);
+            return done(err);
+          }
+          done();
         });
     });
 
-    describe('GET /employees/:_id', () =>{
-        it("It should not retrieve single employee details using valid token and invalid id", (done) =>{
-           chai.request(server)
-                .get('/employees/60d87c7512a0432878b18')
-                .set('token', token)
-                .end((error, res) =>{
-                    res.should.have.status(400);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("success").eql(false);
-                    res.body.should.have.property("message").eql("Error while retrieving single employee details");
-                    res.body.should.have.property("data").should.be.a('object');
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
+    it('givenUserDetails_whenNameIsInWrongFormat_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidNameFormat1;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(
+              `\"name\" with value \"${employeeDetails.name}\" fails to match the required pattern: /^[A-Z]{1}[\\sA-Za-z]{2,30}/`
+            );
+          if (err) {
+            console.log(`error: ${err}`);
+            return done(err);
+          }
+          done();
         });
     });
-    /**
-     * /PUT request test
-     * Update employee details into database for existing employee test
-     */
-    describe('PUT /update/:_id', () =>{
-        it("It should able to update existing employee details using id", (done) =>{
-            chai.request(server)
-                .put('/update/60d87c7512a0432878b18e42')
-                .send(userInputData.employeeUpdate)
-                .set('token', token)
-                .end((error, res) =>{
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("success").eql(true);
-                    res.body.should.have.property("message").eql("Employee details updating successfully");
-                    res.body.should.have.property("data").should.be.a('object');
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
-        });
 
-        it("It should not able update without firstName empty", (done) => {
-            chai.request(server)
-                .put('/update/60d87c7512a0432878b18e42')
-                .send(userInputData.employeeUpdateNeg)
-                .set('token', token)
-                .end((error, res) => {
-                    res.should.have.status(400);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("message").eql("\"firstName\" is not allowed to be empty");
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
+    it('givenUserDetails_whenNameIsLessThanThreeChars_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidNameFormat2;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql('"name" length must be at least 3 characters long');
+          if (err) {
+            console.log(`error: ${err}`);
+            return done(err);
+          }
+          done();
         });
-    })
+    });
 
-    /**
-     * /DELETE request test - Deleting employee details from database using their Id
-     */
-    describe('DELETE /delete/:_id', () => {
-        it("It should able to delete employee details using valid token and Id successfully", (done) =>{
-            chai.request(server)
-                .delete('/delete/60d88e7804ab6633e8b09d61')
-                .set('token', token)
-                .end((error, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("success").eql(true);
-                    res.body.should.have.property("message").eql('Successfully deleted employee details');
-                    res.body.should.have.property("data").should.be.a('object');
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
+    it('givenUserDetails_whenNameIsEmptyString_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidNameFormat3;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql('"name" is not allowed to be empty');
+          if (err) {
+            console.log(`error: ${err}`);
+            return done(err);
+          }
+          done();
         });
+    });
 
-        it("It should not able to delete with invalid id", (done) => {
-            chai.request(server)
-                .delete('/delete/60e0114336026b35082294')
-                .set('token', token)
-                .end((error, res) => {
-                    res.should.have.status(404);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("success").eql(false);
-                    res.body.should.have.property("message").eql("Given Employee not found");
-                    if(error) {
-                        return done(error);
-                    }
-                    done();
-                });
+    it('givenUserDetails_whenNameIsNotAString_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidNameFormat4;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(`"name" must be a string`);
+          if (err) {
+            console.log(`error: ${err}`);
+            return done(err);
+          }
+          done();
         });
-    })
-});   
+    });
+
+    it('givenUserDetails_whenEmailIsInWrongFormat_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidEmailFormat;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"email" with value "${employeeDetails.email}" fails to match the required pattern: /^[a-zA-Z0-9.!#$%&\'*+/=?^_\`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$/`
+            );
+          if (err) {
+            console.log(`Error: ${error}`);
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('givenUserDetails_whenPasswordDoesNotContainUpperCaseChar_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidPasswordFormat1;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"password" with value "${employeeDetails.password}" fails to match the required pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/`
+            );
+          if (err) {
+            console.log(`Error: ${error}`);
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('givenUserDetails_whenPasswordDoesNotContainNumber_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidPasswordFormat2;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"password" with value "${employeeDetails.password}" fails to match the required pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/`
+            );
+          if (err) {
+            console.log(`Error: ${error}`);
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('givenUserDetails_whenPasswordDoesNotContainLoweCaseChar_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidPasswordFormat3;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"password" with value "${employeeDetails.password}" fails to match the required pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/`
+            );
+          if (err) {
+            console.log(`Error: ${error}`);
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('givenUserDetails_whenPasswordDoesNotContainSpecialChar_shouldReturnError', (done) => {
+      const employeeDetails = userInput.addEmployeeInvalidPasswordFormat4;
+      chai
+        .request(server)
+        .post('/addEmployee')
+        .send(employeeDetails)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"password" with value "${employeeDetails.password}" fails to match the required pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/`
+            );
+          if (err) {
+            console.log(`Error: ${error}`);
+            return done(err);
+          }
+          done();
+        });
+    });
+  });
+
+  /**
+   * @description Test cases for retrieving all the employees with GET.
+   *              Contains positive and negative cases.
+   */
+  describe('GET - Retrieves All Data', () => {
+    it('givenValidRequest_shouldGetAllTheEmployeesData', (done) => {
+      chai
+        .request(server)
+        .get('/getEmployees')
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(true);
+          res.body.should.have
+            .property('message')
+            .eql('Successfully retrieved the employees data');
+          res.body.should.have.property('data').which.is.an('array');
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('givenInValidToken_shouldReturnError', (done) => {
+      chai
+        .request(server)
+        .get('/getEmployees')
+        .set('token', token + '1')
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('invalid signature');
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+  });
+
+  /**
+   * @description Test cases for retrieving the employee by id with GET.
+   *              Contains positive and negative cases.
+   */
+  describe('GET - Retrieve Employee With ID', () => {
+    it('given_ValidTokenAndID_shouldReturnEmployeeData', (done) => {
+      chai
+        .request(server)
+        .get(`/getEmployee/${userInput.getOnePass.id}`)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(true);
+          res.body.should.have
+            .property('message')
+            .eql('Employee retrieved successfully');
+          res.body.should.have.property('data').which.is.an('object');
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('given_InValidTokenAndID_shouldReturnError', (done) => {
+      chai
+        .request(server)
+        .get(`/getEmployee/${userInput.getOneFail.id}`)
+        .set('token', token)
+        .end((error, res) => {
+          res.should.have.status(404);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have.property('message').eql('employee not found!🤷🏻‍♀️');
+          if (error) {
+            return done(error);
+          }
+          done();
+        });
+    });
+  });
+
+  /**
+   * @description Test cases for updating the employees by id with PUT.
+   *              Contains positive and negative cases.
+   */
+  describe('PUT - Update Employee Data', () => {
+    it('givenValidData_shouldUpdateEmployeeDataSuccessfully', (done) => {
+      chai
+        .request(server)
+        .put(`/updateEmployee/${userInput.getOnePass.id}`)
+        .send(userInput.updateEmployeePass)
+        .set('token', token)
+        .end((error, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(true);
+          res.body.should.have
+            .property('message')
+            .eql('Details updated for the employee successfully');
+          res.body.should.have.property('data').should.be.a('object');
+          if (error) {
+            return done(error);
+          }
+          done();
+        });
+    });
+
+    it('givenInValidNameFormat_shouldReturnErrorMessage', (done) => {
+      chai
+        .request(server)
+        .put(`/updateEmployee/${userInput.getOnePass.id}`)
+        .send(userInput.addEmployeeInvalidNameFormat1)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"name" with value "${userInput.addEmployeeInvalidNameFormat1.name}" fails to match the required pattern: /^[A-Z]{1}[\\sA-Za-z]{2,30}/`
+            );
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+
+    it('givenInValidEmailFormat_shouldReturnErrorMessage', (done) => {
+      chai
+        .request(server)
+        .put(`/updateEmployee/${userInput.getOnePass.id}`)
+        .send(userInput.addEmployeeInvalidEmailFormat)
+        .set('token', token)
+        .end((error, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"email" with value "${userInput.addEmployeeInvalidEmailFormat.email}" fails to match the required pattern: /^[a-zA-Z0-9.!#$%&\'*+/=?^_\`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$/`
+            );
+          if (error) {
+            return done(error);
+          }
+          done();
+        });
+    });
+
+    it('givenInValidPasswordFormat_shouldReturnErrorMessage', (done) => {
+      chai
+        .request(server)
+        .put(`/updateEmployee/${userInput.getOnePass.id}`)
+        .send(userInput.updateEmployeeInvalidPasswordFormat1)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+          res.body.should.have
+            .property('message')
+            .eql(
+              `"password" with value "${userInput.updateEmployeeInvalidPasswordFormat1.password}" fails to match the required pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/`
+            );
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+  });
+
+  /**
+   * @description Test cases for deleting the employee by id with DELETE.
+   *              Contains positive and negative cases.
+   */
+  describe('DELETE - Removes Employee', () => {
+    it('givenValidIDAndToken_shouldDeleteEmployeeDataSuccessfully', (done) => {
+      chai
+        .request(server)
+        .delete(`/deleteEmployee/${userInput.deletePass.id}`)
+        .set('token', token)
+        .end((error, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(true);
+          res.body.should.have
+            .property('message')
+            .eql('Employee deleted successfully');
+          if (error) {
+            return done(error);
+          }
+          done();
+        });
+    });
+
+    it('givenInValidIDAndValidToken_shouldReturnErrorMessage', (done) => {
+      chai
+        .request(server)
+        .delete(`/deleteEmployee/${userInput.getOneFail.id}`)
+        .set('token', token)
+        .end((err, res) => {
+          res.should.have.status(500);
+          res.body.should.be.a('object');
+          res.body.should.have.property('success').eql(false);
+          res.body.should.have
+            .property('message')
+            .eql('Some error occurred🤷🏻‍♂️!');
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+  });
+});

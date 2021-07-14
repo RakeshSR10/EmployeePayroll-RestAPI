@@ -1,17 +1,22 @@
-'use strict';
+'use strict'
 
 //importing property/function for joi
 const { string } = require('@hapi/joi');
-
+ 
 //importing joi module
 const Joi = require('@hapi/joi');
 
 //joi validating object
 const validateInput = Joi.object({
-  name: Joi.string()
+  firstName: Joi.string()
     .min(3)
     .max(30)
-    .pattern(new RegExp('^[A-Z]{1}[\\sA-Za-z]{2,30}'))
+    .pattern(new RegExp('^[A-Z]{1}[A-Za-z]{2,30}'))
+    .required(),
+  lastName: Joi.string()
+    .min(3)
+    .max(30)
+    .pattern(new RegExp('^[A-Z]{1}[A-Za-z]{2,30}'))
     .required(),
   email: Joi.string()
     .pattern(
@@ -25,10 +30,6 @@ const validateInput = Joi.object({
       new RegExp('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})')
     )
     .required(),
-  phoneNumber: Joi.string(),
-  department: Joi.string(),
-  salary: Joi.string(),
-  company: Joi.string(),
 });
 
 //exporting module
