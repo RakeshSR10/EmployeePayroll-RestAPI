@@ -61,7 +61,7 @@ class EmployeeController {
    * @param {*} req (express property)
    * @param {*} res (express property)
    */
-  Login(req, res) {
+  Login = (req, res) => {
     const userCredentials = {
       email: req.body.email,
       password: req.body.password,

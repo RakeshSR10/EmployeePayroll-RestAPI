@@ -18,15 +18,13 @@ describe('POST - User Registration', () => {
     const userDetails = userInput.registerUserPass;
     chai
       .request(server)
-      .post('/registerUser')
+      .post('/register')
       .send(userDetails)
       .end((err, res) => {
         res.should.have.status(201);
         res.body.should.be.a('object');
         res.body.should.have.property('success').eql(true);
-        res.body.should.have
-          .property('message')
-          .eql('User registered successfully');
+        res.body.should.have.property('message').eql('User registered successfully');
         res.body.should.have.property('data').which.is.an('object');
         err ? done(err) : done();
       });
@@ -36,15 +34,13 @@ describe('POST - User Registration', () => {
     const userDetails = userInput.registerUserFirstNameFail;
     chai
       .request(server)
-      .post('/registerUser')
+      .post('/register')
       .send(userDetails)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.be.a('object');
         res.body.should.have.property('success').eql(false);
-        res.body.should.have
-          .property('message')
-          .eql(
+        res.body.should.have.property('message').eql(
             `"firstName" with value "${userDetails.firstName}" fails to match the required pattern: /^[A-Z]{1}[A-Za-z]{2,30}/` ||
               'Some error occurred while adding user'
           );
@@ -59,7 +55,7 @@ describe('POST - User Login', () => {
     const userCredentials = userInput.userLoginPass;
     chai
       .request(server)
-      .post('/userLogin')
+      .post('/login')
       .send(userCredentials)
       .end((err, res) => {
         res.should.have.status(200);
@@ -75,7 +71,7 @@ describe('POST - User Login', () => {
     const userCredentials = userInput.loginWrongEmail;
     chai
       .request(server)
-      .post('/userLogin')
+      .post('/login')
       .send(userCredentials)
       .end((err, res) => {
         res.should.have.status(400);
@@ -92,7 +88,7 @@ describe('POST - User Login', () => {
     const userCredentials = userInput.userLoginWrongPasswordFail;
     chai
       .request(server)
-      .post('/userLogin')
+      .post('/login')
       .send(userCredentials)
       .end((err, res) => {
         res.should.have.status(400);
@@ -112,7 +108,7 @@ describe('Employee Payroll API', () => {
     const userData = userInput.userLoginPass;
     chai
       .request(server)
-      .post('/userLogin')
+      .post('/login')
       .send(userData)
       .end((err, res) => {
         token = res.body.data;

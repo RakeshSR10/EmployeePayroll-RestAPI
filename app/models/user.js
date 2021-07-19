@@ -20,7 +20,7 @@ const userSchemaModel = mongoose.Schema(
     lastName: {
        type: String,
        require: true,
-       validate: /^[A-Z]{1}[A-Za-z]{2,30}/,
+       validate: /^[A-Za-z]{2,30}/,
      },
     email: {
       type: String,
@@ -97,7 +97,7 @@ class Registration {
   };
 
   //To login
-  loginUser(clientCredentials, callback) {
+  loginUser = (clientCredentials, callback) =>{
     userDataModel.findOne(
       { email: clientCredentials.email },
       (err, data) => {

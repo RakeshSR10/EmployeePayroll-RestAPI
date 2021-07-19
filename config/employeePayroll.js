@@ -17,6 +17,7 @@ class ConnectToDatabase{
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
+      useCreateIndex: true
     });
 
     //to show some message when the connection made successfully

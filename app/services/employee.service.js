@@ -1,7 +1,7 @@
 'use strict';
 
 // Importing the database structure or model
-const employeeSchema = require('../models/employee.model.js');
+const employeeSchema = require('../models/employee.model');
 
 //Importing helper class
 const helper = require('../middleware/helper.js');
@@ -33,7 +33,6 @@ class ServiceMethods {
     try {
       //calling method to get all the employees
       employeeSchema.findAll((err, data) => {
-        //      ⬆------ some error (findAll is not a function ?)
         return err ? callback(err, null) : callback(null, data);
       });
     } catch (err) {
@@ -48,7 +47,6 @@ class ServiceMethods {
    * @returns callback, status, object
    */
   getOne = (empId, callback) => {
-    console.log(`empId.empId in service.js/getOne methods ${empId.empId}`);
     try {
       if (!empId.empId) {
         return res

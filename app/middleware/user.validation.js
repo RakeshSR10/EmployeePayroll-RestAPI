@@ -14,9 +14,9 @@ const validateInput = Joi.object({
     .pattern(new RegExp('^[A-Z]{1}[A-Za-z]{2,30}'))
     .required(),
   lastName: Joi.string()
-    .min(3)
+    .min(2)
     .max(30)
-    .pattern(new RegExp('^[A-Z]{1}[A-Za-z]{2,30}'))
+    .pattern(new RegExp('^[A-Za-z]{2,30}'))
     .required(),
   email: Joi.string()
     .pattern(
@@ -25,11 +25,7 @@ const validateInput = Joi.object({
       )
     )
     .required(),
-  password: Joi.string()
-    .pattern(
-      new RegExp('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})')
-    )
-    .required(),
+    password: Joi.string().min(8).max(20).pattern(new RegExp("^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$")).required(),
 });
 
 //exporting module

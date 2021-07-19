@@ -91,9 +91,9 @@ class CRUDOperations {
         email: newEmployee.email,
         password: newEmployee.password,
         phoneNumber: newEmployee.phoneNumber,
-        department: newEmployee.department || 'Management',
-        salary: newEmployee.salary || 'Rs.30,000.00/-',
-        company: newEmployee.company || 'ProMax',
+        department: newEmployee.department,
+        salary: newEmployee.salary,
+        company: newEmployee.company,
       });
 
       //to save the new data
@@ -129,7 +129,6 @@ class CRUDOperations {
 
   //update with id
   updateEmpById = (empId, empData, callback) => {
-    console.log(`Employee id: ${empId.empId}`);
 
     try {
       employeeDataModel.findByIdAndUpdate(

@@ -13,10 +13,11 @@ const mongoose = require('mongoose');
 class ConnectToDatabase{
   //to connect to the database
   connectToDatabase = () => {
-    mongoose.connect(process.env.DATABASE_URL_USER, {
+    mongoose.connect(process.env.URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
+      useCreateIndex: true
     });
 
     //to show some message when the connection made successfully

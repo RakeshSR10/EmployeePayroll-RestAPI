@@ -30,18 +30,16 @@ class ServiceMethods {
    * @param {object} userCredentials data from client(email and password)
    * @param {function} callback callback function
    */
-  userLogin(userCredentials, callback) {
-    const token = helper.accessTokenGenerator(userCredentials);
+  userLogin = (userCredentials, callback) => {
     userSchema.loginUser(userCredentials, (err, data) => {
-      if (err) {
+      if(err){
         return callback(err, null);
-      } else if (
-        !helper.passwordCheckWithBCrypt(userCredentials.password, data.password)
-      ) {
-        return callback('Wrong password!', null);
+      } else if(helper.passwordCheckWithBCrypt(userCredentials.password, data.password)){
+        const token = helper.accessTokenGenerator(userCredentials);
+        return (token) ? callback(null, token) : callback(err, null);
       }
-      return callback(null, token);
-    });
+      return callback('Wrong password!', null)
+    })
   }
 }
 
