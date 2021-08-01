@@ -99,28 +99,9 @@ class ServiceMethods {
         return err ? callback(err, null) : callback(null, data);
       });
     } catch (err) {
-      callback(err, null);
+      return callback(err, null);
     }
   };
-
-  /**
-   * To authorize the user
-   * @param {object} empCredentials data from client(email and password)
-   * @param {function} callback callback function
-   */
-  employeeLogin(empCredentials, callback) {
-    const jToken = helper.accessTokenGenerator(empCredentials);
-    employeeSchema.loginEmp(empCredentials, (err, data) => {
-      if (err) {
-        callback(err, null);
-      } else if (
-        !helper.passwordCheckWithBCrypt(empCredentials.password, data.password)
-      ) {
-        return callback('Wrong password!', null);
-      }
-      return callback(null, jToken);
-    });
-  }
 }
 
 //exporting class

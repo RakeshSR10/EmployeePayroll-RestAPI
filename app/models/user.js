@@ -6,9 +6,6 @@ const mongoose = require('mongoose');
 //Importing bcrypt
 const bcrypt = require('bcrypt');
 
-//assigning salt rounds
-const SALT_ROUNDS = 10;
-
 // Schema for the employee-details
 const userSchemaModel = mongoose.Schema(
   {
@@ -45,11 +42,10 @@ const userSchemaModel = mongoose.Schema(
  * function to make hashed password.
  */
 userSchemaModel.pre('save', function (next) {
-  // const employee = this;
   const user = this;
 
   //generating salt and adding to hashed password, then replacing password with hash
-  bcrypt.hash(user.password, SALT_ROUNDS, (err, hashedPassword) => {
+  bcrypt.hash(user.password, 10, (err, hashedPassword) => {
     if (err) return next(err);
 
     //assigning hashed password to the object
@@ -68,10 +64,7 @@ userSchemaModel.methods.comparePasswords = (clientsPassword, callback) => {
 };
 
 //assigning schema to a constant
-const userDataModel = mongoose.model(
-  'userDataModel',
-  userSchemaModel
-);
+const userDataModel = mongoose.model('userDataModel', userSchemaModel);
 
 // Exporting schema as a module, so that we can directly access the data inside structure.
 module.exports = mongoose.model('userSchema', userSchemaModel);

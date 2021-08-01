@@ -18,37 +18,21 @@ class bcryptHelper {
    */
   accessTokenGenerator(empData) {
     return JWT.sign(empData, process.env.PRIVATE_TOKEN, {
-      expiresIn: '1000000s',
+      expiresIn: '500000s',
     });
   }
 
-  /**
-   * Method to compare given password and actual password
-   * stored in the database.
-   * @param {*} clientPassword password string provided by the user/client
-   * @param {*} dbSavedPassword salted and hashed password stored in the database
-   * @returns boolean
-   */
   passwordCheckWithBCrypt(clientPassword, dbSavedPassword) {
     return clientPassword && dbSavedPassword
       ? bcrypt.compareSync(clientPassword, dbSavedPassword)
       : false;
   }
-
-  /**
-   * To authenticate token
-   * @param {*} req (express property)
-   * @param {*} res (express property)
-   * @param {*} next (express property)
-   * @returns HTTP status and object
-   */
   checkJWToken(req, res, next) {
     const token = req.get('token');
 
     if (token) {
       JWT.verify(token, process.env.PRIVATE_TOKEN, (err) => {
         if (err) {
-          console.log('Error: ', err);
           return res.status(400).send({
             success: false,
             message: err.message || 'Invalid token!',

@@ -13,9 +13,6 @@ const mongoose = require('mongoose');
 //Importing bcrypt
 const bcrypt = require('bcrypt');
 
-//assigning salt rounds
-const SALT_ROUNDS = 10;
-
 // Schema for the employee-details
 const employeeDataSchema = mongoose.Schema(
   {
@@ -31,11 +28,6 @@ const employeeDataSchema = mongoose.Schema(
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
       unique: true, //<check
     },
-    password: {
-      type: String,
-      require: true,
-      validate: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
-    },
     phoneNumber: String,
     department: String,
     salary: String,
@@ -46,25 +38,6 @@ const employeeDataSchema = mongoose.Schema(
     versionKey: false, //to avoid showing version
   }
 );
-
-/**
- * function to make hashed password.
- */
-employeeDataSchema.pre('save', function (next) {
-  // const employee = this;
-  const employee = this;
-
-  //generating salt and adding to hashed password, then replacing password with hash
-  bcrypt.hash(employee.password, SALT_ROUNDS, (err, hashedPassword) => {
-    if (err) {
-      return next(err);
-    }
-    employee.password = hashedPassword;
-
-    //re-routing to the next middleware
-    next();
-  });
-});
 
 //comparing passwords for the authentication
 employeeDataSchema.methods.comparePasswords = (clientsPassword, callback) => {

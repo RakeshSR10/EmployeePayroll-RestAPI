@@ -37,7 +37,7 @@ class EmployeeController {
       //calling method to add new employee data
       service.registerNewEmployee(newUser, (err, data) => {
         return err
-          ? res.status(500).send({
+          ? res.status(400).send({
               success: false,
               message:
                 err.message || 'Some error occurred while adding user',
@@ -49,9 +49,9 @@ class EmployeeController {
             });
       });
     } catch (err) {
-      return res.status(500).send({
+      return res.status(400).send({
         success: false,
-        message: err.message || 'Some error occurred!🎈',
+        message: err.message || 'Some error occurred!',
       });
     }
   };
@@ -68,12 +68,12 @@ class EmployeeController {
     };
     
     //calling a function to login employee
-    service.userLogin(userCredentials, (err, data) => {
+    service.userLogin(userCredentials, (err, token) => {
       return err
         ? res.status(400).send({ success: false, message: err })
         : res
             .status(200)
-            .send({ success: true, message: 'Login successful👍', data: data });
+            .send({ success: true, message: 'Login successfully', token: token });
     });
   }
 }

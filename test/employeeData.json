@@ -1,9 +1,9 @@
 {
     "registerUserPass": {
-      "firstName": "Trialperson",
-      "lastName": "Passing",
-      "email": "trialperson@gmail.com",
-      "password": "TestPerson123@"
+      "firstName": "Rakesh",
+      "lastName": "SR",
+      "email": "rakesh@gmail.com",
+      "password": "rakesh@123"
     },
     "registerUserFirstNameFail": {
       "firstName": "testPerson",
@@ -88,11 +88,11 @@
       "password": "1Employee123#"
     },
     "loginWrongEmail": {
-      "email": "employee1@@gmail.com",
-      "password": "1Employee123#"
+      "email": "r@gmail.com",
+      "password": "rakesh@123"
     },
     "loginWrongPassword": {
-      "email": "employee1@gmail.com",
+      "email": "rakesh@gmail.com",
       "password": "1employee123#"
     },
     "some": {

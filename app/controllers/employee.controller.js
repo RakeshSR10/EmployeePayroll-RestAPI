@@ -35,7 +35,6 @@ class EmployeeController {
       const newEmployee = {
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
         phoneNumber: req.body.phoneNumber,
         department: req.body.department,
         salary: req.body.salary,
@@ -59,7 +58,7 @@ class EmployeeController {
     } catch (err) {
       res.status(500).send({
         success: false,
-        message: err.message || 'Some error occurred!🎈',
+        message: err.message || 'Some error occurred!',
       });
     }
   };
@@ -87,7 +86,7 @@ class EmployeeController {
     } catch (err) {
       res.status(500).send({
         success: false,
-        message: err.message || 'Some error occurred!🎆',
+        message: err.message || 'Some error occurred!',
       });
     }
   };
@@ -107,9 +106,9 @@ class EmployeeController {
         if (!data)
           return res
             .status(404)
-            .send({ success: false, message: 'employee not found!🤷🏻‍♀️' });
+            .send({ success: false, message: 'employee not found!' });
         return err
-          ? res.status(500).send({
+          ? res.status(400).send({
               success: false,
               message:
                 err.message || 'some error occurred while getting the data',
@@ -121,9 +120,9 @@ class EmployeeController {
             });
       });
     } catch (err) {
-      res.status(500).send({
+      res.status(400).send({
         success: false,
-        message: err.message || 'Some error occurred!🧨',
+        message: err.message || 'Some error occurred!',
       });
     }
   };
@@ -164,21 +163,21 @@ class EmployeeController {
       //calling method to update employee data
       service.update(empId, updatedDetails, (err, data) => {
         return err
-          ? res.status(500).send({
+          ? res.status(400).send({
               success: false,
               message:
                 err.message || 'some error occurred while updating the details',
             })
           : res.status(200).send({
               success: true,
-              message: `Details updated for the employee successfully`,
+              message: `Employee details successfully updated`,
               data: data,
             });
       });
     } catch (err) {
-      res.status(500).send({
+      res.status(400).send({
         success: false,
-        message: err.message || 'Some error occurred!🎎',
+        message: err.message || 'Some error occurred!',
       });
     }
   };
@@ -199,8 +198,8 @@ class EmployeeController {
       service.remove(empId, (err, data) => {
         return err
           ? res
-              .status(500)
-              .send({ success: false, message: 'Some error occurred🤷🏻‍♂️!' })
+              .status(400)
+              .send({ success: false, message: 'Some error occurred!' })
           : res.status(200).send({
               success: true,
               message: 'Employee deleted successfully',
@@ -208,8 +207,8 @@ class EmployeeController {
       });
     } catch (err) {
       res
-        .status(500)
-        .send({ message: err.message || 'Some error occurred!🎊' });
+        .status(400)
+        .send({ message: err.message || 'Some error occurred!' });
     }
   };
 }

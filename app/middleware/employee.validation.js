@@ -20,11 +20,6 @@ const validateInput = Joi.object({
       )
     )
     .required(),
-  password: Joi.string()
-    .pattern(
-      new RegExp('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})')
-    )
-    .required(),
   phoneNumber: Joi.string(),
   department: Joi.string(),
   salary: Joi.string(),
