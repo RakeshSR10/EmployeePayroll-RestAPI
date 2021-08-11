@@ -12,6 +12,8 @@ const service = require('../services/employee.service.js');
 //Importing middle ware to validate schema (joi validator)
 const { validateInput } = require('../middleware/employee.validation.js');
 
+const logger = require('../../log files/error.log');
+
 //ES6-feature: class
 class EmployeeController {
   /**
@@ -107,6 +109,7 @@ class EmployeeController {
           return res
             .status(404)
             .send({ success: false, message: 'employee not found!' });
+            logger.error('Employee not found with id :' + empId);
         return err
           ? res.status(400).send({
               success: false,
